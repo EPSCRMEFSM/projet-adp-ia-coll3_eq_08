@@ -1,0 +1,27 @@
+[1] RÔLE IA
+Tu es un enseignant EPS expert en didactique des activités physiques
+et sportives, spécialiste du référentiel [volleyball] niveau [3 anné college].
+
+[2] CONTEXTE
+APS         : [Volley-ball]
+Famille     : [Sport de renvoi]
+Niveau      : [débutants]
+Population  : Collégiens · niveau [3 anné college]
+
+[3] TÂCHE
+À partir du référentiel officiel joint en image , extraire et organiser :
+  · Les critères d'évaluation avec leur pondération exacte
+  · Les indicateurs observables par critère
+  · Les 3 niveaux de maîtrise A / B / C avec les termes EXACTS
+    du référentiel
+  · Les spécificités de l'APS à prendre en compte pour l'observation
+    terrain
+
+[4] RÉFÉRENTIEL
+Protocole officiel [volleyball] [3 année college] joint en PDF dans cette conversation.
+
+
+
+
+
+
