@@ -1,0 +1,180 @@
+RAPPORT FINAL DE PROJET — OUTIL ES-VLB
+Outil d'aide à la décision pédagogique EPS — Volleyball — COL3-G08
+CRMEF Inezgane — ADP 2026
+====================================================================
+
+
+1. OBJET DE L'OUTIL
+--------------------------------------------------------------------
+ES-VLB est une application web autonome (un seul fichier HTML/CSS/
+JavaScript, sans serveur ni base de données externe) destinee a aider
+un enseignant d'EPS a :
+- diagnostiquer le niveau d'une classe en Volleyball selon le
+  referentiel officiel (BO special n0 5 du 19/07/2012, DNB Niveau 2) ;
+- identifier les axes de travail prioritaires pour le cycle ;
+- generer une planification de seances adaptee ;
+- saisir et calculer les notes d'evaluation par equipe et par eleve
+  selon un bareme entierement personnalisable.
+
+L'outil ne produit pas de note officielle a lui seul : il aide a
+structurer le diagnostic et la decision pedagogique, la decision
+finale restant a l'enseignant.
+
+
+2. ARCHITECTURE GENERALE
+--------------------------------------------------------------------
+Fichier unique : ES-VLB_App_Premium_v4.html (~7100 lignes, ~265 Ko).
+Deux espaces de travail principaux, navigables via une barre d'onglets
+commune toujours visible :
+
+  - "Diagnostic & Planification" (#pageOutil) : assistant en 4 etapes
+    (Diagnostic de classe -> Selection des axes prioritaires ->
+    Parametrage du cycle -> Planification dynamique).
+  - "Grille d'Evaluation" (#pageGrille) : saisie des notes par equipe
+    et par eleve, bareme modifiable, gestion des equipes.
+
+Toutes les donnees sont stockees uniquement dans le navigateur de
+l'enseignant (localStorage) : aucune donnee n'est envoyee a l'exterieur,
+aucun compte ni connexion requis. L'outil fonctionne hors connexion
+apres le premier chargement (dependance Tesseract.js retiree
+volontairement pour garantir cette autonomie, au prix de la perte de
+l'import de liste par photographie).
+
+
+3. FONCTIONNALITES LIVREES
+--------------------------------------------------------------------
+
+3.1 Diagnostic & Planification
+- Choix du niveau scolaire (1AC/2AC/3AC), qui ajuste automatiquement
+  les baremes maximum des observables OBS-01/02/03.
+- Saisie manuelle eleve par eleve, ou import CSV terrain.
+- Calcul automatique : moyenne /10, note finale /20, profil global
+  A/B/C, profil detaille par observable, lacune(s) identifiee(s),
+  axe prioritaire associe.
+- Deux referentiels d'axes prioritaires disponibles et selectionnables
+  (ADP2026 et TD2), avec recalcul immediat de la pertinence par axe.
+- Selection des axes a travailler (regle de nombre minimal/maximal
+  imposee par l'outil).
+- Parametrage du nombre de seances du cycle (curseur, 6 a 10).
+- Generation automatique d'une planification de cycle avec tableau
+  recapitulatif et recommandation globale.
+- Persistance automatique de toute la saisie (formulaire, niveau,
+  referentiel, axes coches, nombre de seances, etape en cours) :
+  fermer ou recharger la page ne fait perdre aucune donnee.
+- Bouton "Vider le diagnostic" : efface uniquement les eleves et
+  resultats saisis, sans toucher au niveau scolaire, au referentiel
+  ni aux axes/seances deja parametres.
+- Bouton "Nouvelle session" : reinitialisation complete de cet espace,
+  avec confirmation obligatoire.
+- Exports CSV et impression a chaque etape cle.
+
+3.2 Grille d'Evaluation
+- Deux modeles de grille preconfigures, bareme entierement modifiable
+  (noms de criteres, scores maximum, libelles de niveau FAIBLE/MOYEN/
+  BON, valeurs de points, descriptions), avec repercussion instantanee
+  sur le tableau et la formule de calcul /20.
+- Gestion des equipes : ajout, suppression (avec confirmation,
+  minimum une equipe toujours preservee), reordonnancement par
+  glisser-deposer, renumerotation automatique apres suppression.
+- Gestion des eleves par equipe : ajout, suppression individuelle
+  avec garde-fou (minimum un eleve par equipe, bouton desactive sinon).
+- Import d'une liste d'eleves (fichier ou saisie), avec ensuite une
+  saisie rapide par numero : taper le numero d'un eleve remplit
+  automatiquement son nom, avec retour visuel succes/erreur.
+- Saisie des notes par selection directe de la valeur dans le bareme
+  (systeme de puces classees par niveau), calcul instantane de la
+  note /20.
+- Bouton "Vider la grille" : efface uniquement noms et notes saisis,
+  bareme et structure des equipes preserves.
+- Analyse de synthese de la grille, exports PDF/CSV, impression.
+
+3.3 Systeme de confirmation et notification (transverse aux 2 espaces)
+- Toute action destructrice (suppression d'equipe, reinitialisation,
+  "vider", nouvelle session) declenche une fenetre de confirmation
+  centree avec signal sonore, fermable par le bouton Annuler ou par un
+  clic en dehors de la fenetre, sans jamais agir sans validation
+  explicite de l'utilisateur.
+- Notifications de succes ("toast") en bas d'ecran apres les actions
+  de type "vider" ou import reussi.
+- Remplace entierement les anciens window.confirm()/window.alert()
+  natifs du navigateur.
+
+3.4 Page d'accueil / identite visuelle
+- Bandeau d'en-tete integrant l'identite visuelle ES-VLB (logo,
+  titre, sous-titre, encart equipe COL3-G08, citation), avec deux
+  cartes de navigation menant directement aux deux espaces reels de
+  l'application (aucune nouvelle page ni route fictive creee).
+
+3.5 Guide d'aide interactif
+- Bouton "? Aide" toujours visible dans la barre de navigation,
+  sur les deux pages.
+- Ouverture automatique a la toute premiere visite (memorisee via
+  localStorage), puis uniquement sur clic ensuite.
+- Modale a 5 onglets en lecture seule : Accueil (acces direct aux
+  2 espaces), Diagnostic (les 4 etapes expliquees), Grille (4 etapes
+  expliquees), Export (les 4 options d'export), Securite (fonctionnement
+  des confirmations, sauvegarde locale, limites en cas de changement
+  d'appareil).
+- Fermeture par bouton "X" ou clic en dehors de la fenetre ; adaptation
+  automatique au mode sombre du systeme.
+
+
+4. CORRECTIONS DE BUGS REALISEES
+--------------------------------------------------------------------
+- Notes affichees converties au lieu des notes brutes saisies, dans
+  le tableau "Analyse de la classe" puis dans le "Tableau individuel" :
+  les deux tableaux affichaient une valeur normalisee sur 10 au lieu
+  de la valeur exacte tapee par l'enseignant (ex. 4,5/6 affiche en
+  7,5). Corrige dans les deux tableaux et dans leurs exports CSV ;
+  les moyennes et profils A/B/C, eux, continuent a juste titre d'utiliser
+  les valeurs normalisees.
+- Navigation bloquee entre l'Etape 2 et l'Etape 1 du Diagnostic : le
+  bouton de retour existait dans le code mais etait rendu invisible
+  par une barre d'outils plus recente qui le masquait sans le
+  remplacer. Bouton de retour reintegre ; la perte de la selection
+  d'axes lors d'un retour en arriere a egalement ete corrigee (les
+  axes coches sont desormais conserves).
+- Risque d'affichage bloque ("Analyse de la classe" restant visible
+  par-dessus une autre etape) : garde-fou ajoute pour fermer
+  systematiquement cette vue lors de tout changement d'etape.
+
+
+5. POINTS VOLONTAIREMENT NON TRAITES OU EXCLUS
+--------------------------------------------------------------------
+- Suppression de la section "Analyse de la classe" : demandee dans un
+  prompt, explicitement refusee/annulee a la demande de l'utilisateur
+  car contraire a une decision anterieure de conserver cette page.
+- Import de liste par photographie (OCR/Tesseract.js) : retire
+  volontairement pour garantir un fonctionnement 100% hors connexion
+  dès le premier chargement.
+- Export/import JSON d'une session complete : identifie comme
+  manquant lors de l'audit de deployment GitHub Pages, non implemente.
+- Jeu de donnees de demonstration pre-rempli : identifie comme
+  manquant, non implemente.
+- Renommage du fichier en index.html et structuration du depot pour
+  GitHub Pages : identifie comme necessaire, non realise.
+- Demande d'application mobile complete avec authentification,
+  tableau de bord et publication sur magasin d'applications : refusee,
+  car hors perimetre de l'outil HTML existant et ne correspondant pas
+  a un produit reellement fonctionnel.
+
+
+6. METHODE DE VERIFICATION
+--------------------------------------------------------------------
+Chaque modification a ete verifiee par execution reelle du code
+(environnement jsdom simulant un navigateur), et non par simple
+relecture : verification systematique de la syntaxe de tous les blocs
+de script, puis scenarios cibles (ex. saisie -> sauvegarde ->
+simulation de rechargement de page -> verification que les donnees
+sont identiques ; suppression jusqu'au dernier eleve d'une equipe pour
+verifier le blocage ; navigation aller-retour entre etapes avec
+verification de la preservation des axes coches).
+
+
+7. ETAT FINAL
+--------------------------------------------------------------------
+Fichier livre : ES-VLB_App_Premium_v4.html — fonctionnel, teste,
+sans erreur de syntaxe detectee sur l'ensemble des blocs de script,
+pret a etre ouvert directement dans un navigateur ou depose tel quel
+sur un hebergement de pages statiques (avec les reserves du point 5
+concernant la structure de depot GitHub Pages, non finalisee).
