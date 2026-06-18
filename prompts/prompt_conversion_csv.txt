@@ -1,0 +1,12 @@
+LIS CE TABLEAU ET CONVERTIS-LE EN FICHIER CSV
+
+Consignes :
+
+- La première ligne du fichier CSV doit correspondre aux en-têtes des colonnes.
+- Respecte fidèlement la structure du tableau.
+- Transcris toutes les données visibles sans les modifier.
+- Si une cellule est illisible ou ambiguë, indique simplement : [?]
+- N’invente aucune donnée manquante.
+- Conserve l’ordre des lignes et des colonnes.
+- Utilise le séparateur « ; » dans le fichier CSV.
+- Retourne uniquement le contenu du fichier CSV, sans explication ni commentaire supplémentaire.
